@@ -1,0 +1,206 @@
+:root {
+  --concrete: #e4e8ea;
+  --paper: #f8f9fa;
+  --ink: #14232b;
+  --steel: #566872;
+  --line: #c3ccd1;
+  --hivis: #f5c400;
+  --alert: #c23b22;
+  --caution: #c98a00;
+  --ok: #2f7d57;
+  --font-body: "Barlow", system-ui, sans-serif;
+  --font-display: "Barlow Condensed", "Barlow", system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html, body { height: 100%; margin: 0; }
+
+body {
+  background: var(--concrete);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+button, input, select { font: inherit; color: inherit; }
+
+:focus-visible { outline: 3px solid var(--hivis); outline-offset: 2px; box-shadow: 0 0 0 1px var(--ink); }
+
+.app { display: flex; flex-direction: column; height: 100dvh; }
+
+/* Top bar */
+.topbar {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 16px;
+  padding: 14px 24px 12px;
+  border-bottom: 4px solid var(--hivis);
+}
+.brand { margin: 0; font-size: 13px; color: var(--steel); }
+.topbar h1 { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: 34px; line-height: 1; letter-spacing: 0.01em; }
+.count { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 22px; font-variant-numeric: tabular-nums; }
+
+/* Filters */
+.toolbar {
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: 14px 20px;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--line);
+}
+.field { display: flex; flex-direction: column; gap: 4px; min-width: 150px; }
+.field > span { font-size: 13px; color: var(--steel); }
+.field strong { color: var(--ink); font-weight: 600; }
+.field-search { flex: 1 1 280px; }
+.field-slider { width: 210px; }
+.field-slider input { accent-color: var(--ink); height: 36px; margin: 0; }
+.toolbar input[type="search"], .toolbar input[type="number"], .toolbar select {
+  height: 36px; padding: 0 10px; background: var(--paper);
+  border: 1px solid var(--line); border-radius: 2px;
+}
+.toolbar input:hover, .toolbar select:hover { border-color: var(--steel); }
+.price-inputs { display: flex; align-items: center; gap: 8px; }
+.price-inputs input { width: 84px; }
+.price-inputs span { color: var(--steel); font-size: 13px; }
+.btn-clear {
+  height: 36px; padding: 0 14px; background: transparent; cursor: pointer;
+  border: 1px solid var(--ink); border-radius: 2px; font-weight: 500;
+}
+.btn-clear:hover:not(:disabled) { background: var(--ink); color: var(--paper); }
+.btn-clear:disabled { opacity: 0.35; cursor: default; }
+
+/* Grid */
+.grid-wrap { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; background: var(--paper); }
+.grid-scroll { flex: 1; min-height: 0; overflow: auto; }
+
+.progress { position: absolute; top: 0; left: 0; right: 0; height: 3px; z-index: 3; overflow: hidden; opacity: 0; transition: opacity 0.15s; }
+.progress::after { content: ""; position: absolute; inset: 0; width: 35%; background: var(--hivis); }
+.progress.is-active { opacity: 1; }
+.progress.is-active::after { animation: slide 0.9s ease-in-out infinite; }
+@keyframes slide { from { transform: translateX(-100%); } to { transform: translateX(300%); } }
+
+table { width: 100%; min-width: 760px; border-collapse: separate; border-spacing: 0; font-variant-numeric: tabular-nums; }
+
+/* Sticky header: stays visible while the 50 rows scroll */
+thead th {
+  position: sticky; top: 0; z-index: 2;
+  background: var(--ink); color: var(--paper);
+  padding: 0; text-align: left; font-weight: 600;
+  border-bottom: 2px solid var(--hivis);
+}
+thead th button {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  padding: 11px 16px; background: none; border: 0; cursor: pointer; text-align: inherit; font-weight: 600;
+}
+thead th.num button { justify-content: flex-end; }
+thead th button:hover { background: #22363f; }
+thead th:focus-within { z-index: 3; }
+.sort-ind { font-size: 11px; opacity: 0.45; }
+.sort-ind.is-on { opacity: 1; color: var(--hivis); }
+
+tbody td { padding: 9px 16px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+tbody tr:hover td { background: #edf0f2; }
+td.num, th.num { text-align: right; }
+td:first-child { color: var(--steel); }
+tbody.is-stale { opacity: 0.55; transition: opacity 0.15s; }
+
+/* Stock gauge: the one visual flourish */
+.stock { display: inline-flex; align-items: center; justify-content: flex-end; gap: 10px; }
+.stock-value { min-width: 3ch; }
+.gauge { width: 64px; height: 8px; background: var(--line); display: inline-block; }
+.gauge > span { display: block; height: 100%; }
+.gauge-low > span { background: var(--alert); min-width: 3px; }
+.gauge-mid > span { background: var(--caution); }
+.gauge-ok > span { background: var(--ok); }
+
+/* Loading + empty + error */
+.skeleton { display: block; height: 12px; width: 70%; background: var(--concrete); }
+.skeleton-row td:nth-child(n + 4) .skeleton { margin-left: auto; width: 50%; }
+.state { padding: 48px 24px; text-align: center; color: var(--steel); }
+.state p { margin: 0 0 12px; }
+.state button, .pager button {
+  height: 34px; padding: 0 14px; background: var(--paper); cursor: pointer;
+  border: 1px solid var(--ink); border-radius: 2px; font-weight: 500;
+}
+.state button:hover, .pager button:hover:not(:disabled) { background: var(--ink); color: var(--paper); }
+
+/* Pagination */
+.pager {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 20px;
+  padding: 10px 24px; border-top: 1px solid var(--line);
+}
+.pager p { margin: 0; font-variant-numeric: tabular-nums; }
+.pager nav { display: flex; align-items: center; gap: 8px; }
+.pager button:disabled { opacity: 0.35; cursor: default; }
+.page-indicator { min-width: 120px; text-align: center; font-variant-numeric: tabular-nums; }
+
+@media (max-width: 640px) {
+  .topbar, .toolbar, .pager { padding-left: 14px; padding-right: 14px; }
+  .field-slider, .field { flex: 1 1 100%; width: auto; }
+  .pager { justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress.is-active::after { animation: none; width: 100%; }
+  tbody.is-stale { transition: none; }
+}
+
+/* ---- UX additions ---- */
+.topbar-right { display: flex; align-items: center; gap: 20px; }
+.btn-toggle {
+  height: 32px; padding: 0 12px; background: transparent; cursor: pointer;
+  border: 1px solid var(--line); border-radius: 2px; font-size: 13px;
+}
+.btn-toggle:hover { border-color: var(--ink); }
+.btn-toggle[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+
+kbd {
+  display: inline-block; min-width: 18px; padding: 0 5px; margin-left: 4px; text-align: center;
+  font-family: inherit; font-size: 12px; color: var(--ink);
+  background: var(--paper); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 3px;
+}
+
+.field-slider { width: 270px; }
+.field-slider label { font-size: 13px; color: var(--steel); }
+.presets { display: flex; gap: 6px; }
+.presets button {
+  height: 24px; padding: 0 9px; background: transparent; cursor: pointer;
+  border: 1px solid var(--line); border-radius: 12px; font-size: 12px;
+}
+.presets button:hover { border-color: var(--ink); }
+.presets button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+
+.toolbar input[aria-invalid="true"] { border-color: var(--alert); }
+.field-error { color: var(--alert); font-size: 12px; }
+
+.chips {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  padding: 8px 24px; border-bottom: 1px solid var(--line);
+}
+.chip {
+  display: inline-flex; align-items: center; gap: 4px; height: 28px; padding: 0 4px 0 10px;
+  background: var(--paper); border: 1px solid var(--ink); border-radius: 14px; font-size: 13px;
+}
+.chip button {
+  width: 20px; height: 20px; padding: 0; line-height: 1; cursor: pointer;
+  background: none; border: 0; border-radius: 50%; font-size: 16px;
+}
+.chip button:hover { background: var(--ink); color: var(--paper); }
+.chips-clear { background: none; border: 0; cursor: pointer; font-size: 13px; text-decoration: underline; color: var(--steel); }
+.chips-clear:hover { color: var(--ink); }
+
+mark { background: var(--hivis); color: var(--ink); padding: 0 1px; }
+
+.stock-tag { min-width: 3ch; font-size: 12px; font-weight: 600; text-align: right; }
+.stock-tag-low { color: var(--alert); }
+tr.row-out td { background: #f6e9e6; }
+tr.row-out:hover td { background: #f1dcd7; }
+
+.is-compact tbody td { padding-top: 4px; padding-bottom: 4px; }
+.is-compact .gauge { height: 6px; }
+
+@media (max-width: 640px) {
+  .chips { padding-left: 14px; padding-right: 14px; }
+  .topbar-right { gap: 12px; }
+  .field-slider { width: auto; }
+}
